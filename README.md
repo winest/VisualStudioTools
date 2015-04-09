@@ -1,6 +1,6 @@
 ## About VisualStudioTools
 
-VisualStudioTools is a set of utilities to upgrade/relocate/build/clean their projects.<br />
+VisualStudioTools is a set of utilities to upgrade/relocate/build/clean you Visual Studio projects.<br />
 <br />
 Main features:<br />
   1. Upgrade all *.sln to the latest Visual Studio version<br />
