@@ -2,7 +2,7 @@
 
 VisualStudioTools is a set of utilities to upgrade/relocate/build/clean their projects.<br />
 <br />
-Main feature:<br />
+Main features:<br />
   1. Upgrade all *.sln to the latest Visual Studio version<br />
   2. Relocate the output and intermediate path in all *.vcxproj<br />
   3. Relocate the relative path in all *.vcxproj<br />
