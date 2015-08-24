@@ -1,5 +1,13 @@
+//aOldFolder: the old folder in the source file that need to be updated
+//aNewFolder: the new fodler that will replace the old folder (if files are found under the new folder)
+//aOldFiles: an array of old filenames that are renamed now in your new project
+//aNewFiles: an array of current filenames now in your new project
+//Replace <aOldFolder>\\123.js to <aNewFolder>\\123.js if <aNewFolder>\\123.js exists
+//Replace <aOldFolder>\\<aOldFiles> to <aNewFolder>\\<aNewFiles> if both <aOldFolder>\\<aOldFiles> and <aNewFolder>\\<aNewFiles> exist
 function stFileMap( aOldFolder , aNewFolder , aOldFiles , aNewFiles )
 {
+    //For every file exists in aNewFolder, if it's filename is included by aOldFolder
+    //in the source file, then update the path of aOldFolder to aNewFolder
     this.reOldFolder = new RegExp( aOldFolder );
     this.strNewFolder = aNewFolder;
 
@@ -25,7 +33,7 @@ function TraverseAndRelocateVcProjInclude( aVcProjFolderPath , aFileMapAry , aLo
     var enumFile = new Enumerator( folder.Files );
     for ( ; ! enumFile.atEnd() ; enumFile.moveNext() )
     {
-        if ( enumFile.item().Name.match(/.+\.vcxproj/) )
+        if ( enumFile.item().Name.match(/.+\.vcxproj/) )    //This will also update *.vcxproj.filters
         {
             CWUtils.DbgMsg( "VERB" , "RelocateVcProjInclude" , "Updating " + enumFile.item().Name , aLogFolder );
             RelocateVcProjInclude( enumFile.item().Path , aFileMapAry , aLogFolder );

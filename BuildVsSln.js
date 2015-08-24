@@ -81,7 +81,7 @@ function BuildVsSln( aVsPath , aSlnPath , aBuildCfgs , aLogFolder )
             var execObj = CWUtils.Exec( strCmdRebuild , true , null );
             if ( 0 != execObj.ExitCode )
             {
-                CWUtils.DbgMsg( "ERRO" , "BuildVsSln" , "Failed with exit code " + uExitCode + " when doing " + strCmdRebuild , aLogFolder );
+                CWUtils.DbgMsg( "ERRO" , "BuildVsSln" , "Failed with exit code " + execObj.ExitCode + " when doing " + strCmdRebuild , aLogFolder );
             }
             else
             {

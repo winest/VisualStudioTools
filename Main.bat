@@ -16,10 +16,10 @@ function LoadJs( aJsPath )
     file.Close();
     return strContent;
 }
-eval( LoadJs( "..\\..\\_Include\\CWUtils\\Windows\\CWFile.js" ) );
-eval( LoadJs( "..\\..\\_Include\\CWUtils\\Windows\\CWStd.js" ) );
-eval( LoadJs( "..\\..\\_Include\\CWUtils\\Windows\\CWShell.js" ) );
-eval( LoadJs( "..\\..\\_Include\\CWUtils\\Windows\\CWXmlHttp.js" ) );
+eval( LoadJs( "..\\..\\..\\_Include\\CWUtils\\JScript\\Windows\\CWFile.js" ) );
+eval( LoadJs( "..\\..\\..\\_Include\\CWUtils\\JScript\\Windows\\CWStd.js" ) );
+eval( LoadJs( "..\\..\\..\\_Include\\CWUtils\\JScript\\Windows\\CWShell.js" ) );
+eval( LoadJs( "..\\..\\..\\_Include\\CWUtils\\JScript\\Windows\\CWXmlHttp.js" ) );
 eval( LoadJs( "UpgradeVsSln.js" ) );
 eval( LoadJs( "RelocateVcProjOutputIntermediate.js" ) );
 eval( LoadJs( "RelocateVcProjInclude.js" ) );
@@ -67,10 +67,14 @@ for ( ;; )
         }
         case "3" :
         {
-            var aryFolderMap = [ new stFileMap( /.*(Utils|Utility)$/ , "F:\\Code\\C++\\_Include\\CWUtils\\Windows" ,
-                                                ["ShowError.h","MyGeneralUtil.h","ShowError.cpp","MyGeneralUtil.cpp","MyAutoLock.h","MyAutoRWLock.h","MyAutoRWLock.cpp","CmdArgsParser.h","CmdArgsParser.cpp","PrivilegeManager.h","PrivilegeManager.cpp"] ,
-                                                ["CWGeneralUtils.h","CWGeneralUtils.h","CWGeneralUtils.cpp","CWGeneralUtils.cpp","CWLock.h","CWLock.h","CWLock.cpp","CWCmdArgsParser.h","CWCmdArgsParser.cpp","CWProcess.h","CWProcess.cpp"] ) ,
-                                 new stFileMap( /.*(Controls|Ui)$/ , "F:\\Code\\C++\\_Include\\CWUi\\Windows" , ["MyPathDlg.h","MyPathDlg.cpp"] , ["CWCommonDlg.h","CWCommonDlg.cpp"] )
+            var aryFolderMap = [ new stFileMap( /.*(CWUtils|CWUtils\\Windows)$/ , "F:\\Code\\_Include\\CWUtils\\C++\\Windows" ,
+                                                ["MyBuffer.cpp","MyBuffer.h","MyCmdArgsParser.cpp","MyCmdArgsParser.h","MyCrypto.cpp","MyCrypto.h","MyDllInjectClient.cpp","MyDllInjectClient.h","MyDllInjectCommonDef.h","MyDllInjectMgr.cpp","MyDllInjectMgr.h","MyDllInjectServer.cpp","MyDllInjectServer.h","MyEventMgr.cpp","MyEventMgr.h","MyFile.cpp","MyFile.h","MyFileMonitor.cpp","MyFileMonitor.h","MyGeneralUtils.cpp","MyGeneralUtils.h","MyHash.cpp","MyHash.h","MyHttpParser.cpp","MyHttpParser.h","MyIni.cpp","MyIni.h","MyLock.cpp","MyLock.h","MyMatrix.h","MyNetwork.cpp","MyNetwork.h","MyPlatform.cpp","MyPlatform.h","MyProcess.cpp","MyProcess.h","MyQueue.h","MyRegistry.cpp","MyRegistry.h","MySearch.cpp","MySearch.h","MyService.cpp","MyService.h","MyString.cpp","MyString.h","MyThreadPool.cpp","MyThreadPool.h","MyTime.cpp","MyTime.h","MyTree.h","MyVm.cpp","MyVm.h","MyVmWare.cpp","MyVmWare.h","MyVmWareBackdoor.h","MyVolume.cpp","MyVolume.h","MyWmiEventMonitor.cpp","MyWmiEventMonitor.h"] ,
+                                                ["CWBuffer.cpp","CWBuffer.h","CWCmdArgsParser.cpp","CWCmdArgsParser.h","CWCrypto.cpp","CWCrypto.h","CWDllInjectClient.cpp","CWDllInjectClient.h","CWDllInjectCommonDef.h","CWDllInjectMgr.cpp","CWDllInjectMgr.h","CWDllInjectServer.cpp","CWDllInjectServer.h","CWEventMgr.cpp","CWEventMgr.h","CWFile.cpp","CWFile.h","CWFileMonitor.cpp","CWFileMonitor.h","CWGeneralUtils.cpp","CWGeneralUtils.h","CWHash.cpp","CWHash.h","CWHttpParser.cpp","CWHttpParser.h","CWIni.cpp","CWIni.h","CWLock.cpp","CWLock.h","CWMatrix.h","CWNetwork.cpp","CWNetwork.h","CWPlatform.cpp","CWPlatform.h","CWProcess.cpp","CWProcess.h","CWQueue.h","CWRegistry.cpp","CWRegistry.h","CWSearch.cpp","CWSearch.h","CWService.cpp","CWService.h","CWString.cpp","CWString.h","CWThreadPool.cpp","CWThreadPool.h","CWTime.cpp","CWTime.h","CWTree.h","CWVm.cpp","CWVm.h","CWVmWare.cpp","CWVmWare.h","CWVmWareBackdoor.h","CWVolume.cpp","CWVolume.h","CWWmiEventMonitor.cpp","CWWmiEventMonitor.h"]
+                                              ) ,
+                                 new stFileMap( /.*(Ui|CWUi\\Windows)$/ , "F:\\Code\\_Include\\CWUi\\C++\\Windows" , 
+                                                ["MyButton.cpp","MyButton.h","MyCheckBox.cpp","MyCheckBox.h","MyComboBox.cpp","MyComboBox.h","MyCommonDlg.cpp","MyCommonDlg.h","MyControl.cpp","MyControl.h","MyDialog.cpp","MyDialog.h","MyEdit.cpp","MyEdit.h","MyLabel.cpp","MyLabel.h","MyListView.cpp","MyListView.h","MyRadioBtn.cpp","MyRadioBtn.h","MyToolbar.cpp","MyToolbar.h"] , 
+                                                ["CWButton.cpp","CWButton.h","CWCheckBox.cpp","CWCheckBox.h","CWComboBox.cpp","CWComboBox.h","CWCommonDlg.cpp","CWCommonDlg.h","CWControl.cpp","CWControl.h","CWDialog.cpp","CWDialog.h","CWEdit.cpp","CWEdit.h","CWLabel.cpp","CWLabel.h","CWListView.cpp","CWListView.h","CWRadioBtn.cpp","CWRadioBtn.h","CWToolbar.cpp","CWToolbar.h"]
+                                              )
                                ];
             var strFolder = CWUtils.SelectFolder( "Please select the folder where *.vcxproj exists. All *.vcxporj files will be updated" );
             if ( true == CWUtils.SelectYesNo( "Update *.vcxproj files under \"" + strFolder + "\"? (y/n)" ) )
