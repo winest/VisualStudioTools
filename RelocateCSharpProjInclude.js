@@ -16,7 +16,7 @@ function stFileMap( aOldFolder , aNewFolder , aOldFiles , aNewFiles )
     this.aryNewFiles = aNewFiles;
 }
 
-function TraverseAndRelocateVcProjInclude( aVcProjFolderPath , aFileMapAry , aLogFolder )
+function TraverseAndRelocateCSharpProjInclude( aVcProjFolderPath , aFileMapAry , aLogFolder )
 {
     var folder = WshFileSystem.GetFolder( aVcProjFolderPath );
     var enumFolder = new Enumerator( folder.SubFolders );
@@ -25,31 +25,31 @@ function TraverseAndRelocateVcProjInclude( aVcProjFolderPath , aFileMapAry , aLo
         //Avoid the Backup folder
         if ( null == enumFolder.item().Name.match(/^Backup[0-9]*$/) )
         {
-            TraverseAndRelocateVcProjInclude( enumFolder.item().Path , aFileMapAry , aLogFolder );
+            TraverseAndRelocateCSharpProjInclude( enumFolder.item().Path , aFileMapAry , aLogFolder );
         }
     }
 
-    CWUtils.DbgMsg( "VERB" , "RelocateVcProjInclude" , "Checking vcxproj files in \"" + aVcProjFolderPath + "\"" , aLogFolder );
+    CWUtils.DbgMsg( "VERB" , "RelocateCSharpProjInclude" , "Checking vcxproj files in \"" + aVcProjFolderPath + "\"" , aLogFolder );
     var enumFile = new Enumerator( folder.Files );
     for ( ; ! enumFile.atEnd() ; enumFile.moveNext() )
     {
-        if ( enumFile.item().Name.match(/.+\.vcxproj/) )    //This will also update *.vcxproj.filters
+        if ( enumFile.item().Name.match(/.+\.csproj/) )
         {
-            CWUtils.DbgMsg( "VERB" , "RelocateVcProjInclude" , "Updating " + enumFile.item().Name , aLogFolder );
-            RelocateVcProjInclude( enumFile.item().Path , aFileMapAry , aLogFolder );
+            CWUtils.DbgMsg( "VERB" , "RelocateCSharpProjInclude" , "Updating " + enumFile.item().Name , aLogFolder );
+            RelocateCSharpProjInclude( enumFile.item().Path , aFileMapAry , aLogFolder );
         }
     }
 }
 
-function RelocateVcProjInclude( aProjPath , aFileMapAry , aLogFolder )
+function RelocateCSharpProjInclude( aProjPath , aFileMapAry , aLogFolder )
 {    
-    CWUtils.DbgMsg( "VERB" , "RelocateVcProjInclude" , "Enter. aProjPath=\"" + aProjPath + "\"" , aLogFolder );
+    CWUtils.DbgMsg( "VERB" , "RelocateCSharpProjInclude" , "Enter. aProjPath=\"" + aProjPath + "\"" , aLogFolder );
 
     //Load file
     var fileProj = new CWUtils.CAdoTextFile();
     if ( false == fileProj.Open( aProjPath , "UTF-8" ) )
     {
-        CWUtils.DbgMsg( "ERRO" , "RelocateVcProjInclude" , "fileProj.Open() failed. aProjPath=" + aProjPath , aLogFolder );
+        CWUtils.DbgMsg( "ERRO" , "RelocateCSharpProjInclude" , "fileProj.Open() failed. aProjPath=" + aProjPath , aLogFolder );
         return false;
     }
     var strContent = fileProj.ReadAll();
@@ -59,7 +59,7 @@ function RelocateVcProjInclude( aProjPath , aFileMapAry , aLogFolder )
     var xml = new CWUtils.CXml();
     if ( false == xml.LoadFromString(strContent) || 0 != xml.objDom.parseError.errorCode )
     {
-        CWUtils.DbgMsg( "ERRO" , "RelocateVcProjInclude" , "XML failed to parse with error " + 
+        CWUtils.DbgMsg( "ERRO" , "RelocateCSharpProjInclude" , "XML failed to parse with error " + 
                 xml.objDom.parseError.errorCode + "(" + xml.objDom.parseError.reason + ")" , aLogFolder );
         return false;
     }
@@ -70,42 +70,8 @@ function RelocateVcProjInclude( aProjPath , aFileMapAry , aLogFolder )
         xml.document.setProperty( "SelectionNamespaces" , strSetNamespace );
     }
     
-    //Update the variable in the AdditionalIncludeDirectories tag
-    var aryResults = xml.GetElementsByTagName( "AdditionalIncludeDirectories" );
-    for ( var i = 0 ; i < aryResults.length ; i++ )
-    {
-        var strNewText = "";
-        var aryAdditionalIncludeDirectories = aryResults[i].text.split( ";" );
-        for ( var j = 0 ; j < aryAdditionalIncludeDirectories.length ; j++ )
-        {
-            if ( 0 < strNewText.length )
-            {
-                strNewText += ";"
-            }
-            
-            var bMatched = false;
-            for ( var k = 0 ; k < aFileMapAry.length ; k++ )
-            {
-                if ( "undefined" !== typeof(aFileMapAry[k].reOldFolder) && 
-                     aryAdditionalIncludeDirectories[j].match(aFileMapAry[k].reOldFolder) )
-                {
-                    strNewText += CWUtils.ComputeRelativePath( aProjPath , aFileMapAry[k].strNewFolder );
-                    bMatched = true;
-                    break;
-                }
-            }
-            if ( false == bMatched )
-            {
-                strNewText += aryAdditionalIncludeDirectories[j];
-            }
-        }
-
-        CWUtils.DbgMsg( "INFO" , "RelocateVcProjInclude" , aProjPath + " updating AdditionalIncludeDirectories. " + aryResults[i].text + " => " + strNewText , aLogFolder );
-        aryResults[i].text = strNewText;
-    }
-    
-    //Update the variable in the ClCompile.Include and ClInclude.Include
-    var aryInclude = xml.document.selectNodes("//mynamespace:ClCompile[@Include] | //mynamespace:ClInclude[@Include]");
+    //Update the variable in the Compile.Include
+    var aryInclude = xml.document.selectNodes( "//mynamespace:Compile[@Include]" );
     for ( var i = 0 ; i < aryInclude.length ; i++ )
     {
         var strNewPath;
@@ -161,18 +127,18 @@ function RelocateVcProjInclude( aProjPath , aFileMapAry , aLogFolder )
         {
             if ( true == bEverSearchInFolder )
             {
-                CWUtils.DbgMsg( "ERRO" , "RelocateVcProjInclude" , aProjPath + " updating Include. " + strFile + " is not found under any new folder" , aLogFolder );
+                CWUtils.DbgMsg( "ERRO" , "RelocateCSharpProjInclude" , aProjPath + " updating Include. " + strFile + " is not found under any new folder" , aLogFolder );
             }
             strNewPath = strInclude;
         }
 
-        CWUtils.DbgMsg( "INFO" , "RelocateVcProjInclude" , aProjPath + " updating Include. " + strInclude + " => " + strNewPath , aLogFolder );
+        CWUtils.DbgMsg( "INFO" , "RelocateCSharpProjInclude" , aProjPath + " updating Include. " + strInclude + " => " + strNewPath , aLogFolder );
         aryInclude[i].setAttribute( "Include" , strNewPath );
     }
 
     //Overwrite the current project file
     xml.SaveToFile( aProjPath );
 
-    CWUtils.DbgMsg( "VERB" , "RelocateVcProjInclude" , "Leave" , aLogFolder );
+    CWUtils.DbgMsg( "VERB" , "RelocateCSharpProjInclude" , "Leave" , aLogFolder );
     return true;
 }
