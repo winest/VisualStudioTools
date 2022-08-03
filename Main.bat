@@ -16,10 +16,10 @@ function LoadJs( aJsPath )
     file.Close();
     return strContent;
 }
-eval( LoadJs( "..\\..\\..\\_Include\\CWUtils\\JScript\\Windows\\CWFile.js" ) );
-eval( LoadJs( "..\\..\\..\\_Include\\CWUtils\\JScript\\Windows\\CWStd.js" ) );
-eval( LoadJs( "..\\..\\..\\_Include\\CWUtils\\JScript\\Windows\\CWShell.js" ) );
-eval( LoadJs( "..\\..\\..\\_Include\\CWUtils\\JScript\\Windows\\CWXmlHttp.js" ) );
+eval( LoadJs( "..\\..\\..\\_3rdParty\\CWUtils\\JScript\\Windows\\CWFile.js" ) );
+eval( LoadJs( "..\\..\\..\\_3rdParty\\CWUtils\\JScript\\Windows\\CWStd.js" ) );
+eval( LoadJs( "..\\..\\..\\_3rdParty\\CWUtils\\JScript\\Windows\\CWShell.js" ) );
+eval( LoadJs( "..\\..\\..\\_3rdParty\\CWUtils\\JScript\\Windows\\CWXmlHttp.js" ) );
 eval( LoadJs( "UpgradeVsSln.js" ) );
 eval( LoadJs( "RelocateVcProjOutputIntermediate.js" ) );
 eval( LoadJs( "RelocateCppProjInclude.js" ) );
@@ -115,7 +115,7 @@ for ( ;; )
             var strFolder = CWUtils.SelectFolder( "Please select the folder where you want to clean" );
             if ( true == CWUtils.SelectYesNo( "Remove all user mode program garbages under \"" + strFolder + "\"? (y/n)" ) )
             {
-                var reBlackFolders = /^(ipch|_UpgradeReport_Files[0-9]*|_tmh|Intermediate|Backup[0-9]*)$/;
+                var reBlackFolders = /^(obj|objd|ipch|_UpgradeReport_Files[0-9]*|_tmh|Intermediate|Backup[0-9]*)$/;
                 var reWhiteFiles = /^(TestWpp\.pdb)$/
                 var reBlackFiles = /^(UpgradeLog[0-9]*\.htm|UpgradeLog[0-9]*\.XML|BuildLog[0-9]*\.htm)$/;
 
